@@ -33,6 +33,24 @@ const page = () => {
               on creating meaningful digital experiences.
             </p>
           </div>
+
+          <div className="pt-6 border-t border-zinc-800">
+            <h2 className="text-lg font-semibold text-zinc-200 mb-3">Creator</h2>
+            <div className="space-y-1 text-sm">
+              <p className="text-zinc-300">
+                <span className="text-zinc-500">Name:</span> Manish Vaishnav
+              </p>
+              <p className="text-zinc-300">
+                <span className="text-zinc-500">Profession:</span> Student
+              </p>
+              <p className="text-zinc-300">
+                <span className="text-zinc-500">Contact:</span>{' '}
+                <a href="tel:+919521278385" className="text-[#abe3d6] hover:underline">
+                  +91 95212 78385
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>
