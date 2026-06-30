@@ -2,7 +2,7 @@ import React from 'react'
 
 const SideviewCreate = () => {
   return (
-    <div className='relative w-2/3 h-full overflow-hidden'>
+    <div className='relative w-1/2 lg:w-2/3 hidden sm:block h-full overflow-hidden'>
 
       {/* Background image */}
       <div className='absolute inset-0 bg-[url(/imgs/createAccount2.png)] bg-cover bg-center scale-105 blur-[2px]' />

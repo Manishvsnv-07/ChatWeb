@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { use, useEffect, useState } from 'react'
+import { getdata } from '../../../Api-Services/profileData'
+import { useQuery } from '@tanstack/react-query'
 
 const MyFriendsHead = () => {
+  const {data : Userdata} = useQuery({
+    queryKey:["profileData"],
+    queryFn:getdata
+  })
+ 
   return (
     <div className="head w-full h-1/5 bg-white flex justify-center items-center gap-5">
       <h1>Your Friends</h1>
-      <button className='bg-[#ade8d9f8] p-1 rounded-md active:brightness-110 active:scale-99 cursor-pointer'>All Friends</button>
-      <button className='bg-[#75d1bc54] p-1 rounded-md active:brightness-110 active:scale-99 cursor-pointer'>Active</button>
+      <div className='bg-black text-white p-2 rounded-md'>
+        <h1>Friends {Userdata.userdata?.Friends?.length}</h1>
+      </div>
     </div>
   )
 }

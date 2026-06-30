@@ -11,16 +11,12 @@ import { getdata } from '../../../Api-Services/profileData'
 const Customization = () => {
 
   const [Uusername, UpdateUsername] = useState("")
-  console.log(Uusername);
-
   const [Uname, UpdateName] = useState("")
   const [Ugender, UpdateGender] = useState("")
   const [Ustatus, UpdateStatus] = useState("")
 
   useEffect(() => {
     getdata().then((data) => {
-      console.log(data.userdata);
-
       UpdateUsername(data.userdata.username)
       UpdateName(data.userdata.name)
       UpdateGender(data.userdata.gender)
@@ -37,8 +33,6 @@ const Customization = () => {
       Ugender: Ugender,
       Ustatus: Ustatus
     }, { withCredentials: true })
-    console.log(data);
-
     if (data.status === 200) {
       window.location.href = "/profile"
     }
@@ -48,8 +42,18 @@ const Customization = () => {
   if (!UpdateModel) {
     return null
   }
+
+
+  const Logout = async () => {
+    const res = await axios.get("http://localhost:8080/logout", { withCredentials: true })
+    if(res.data.success){
+      router.push("/")
+    }
+  }
+
+
   return (
-    <div className={`absolute top-1/2  left-1/2 -translate-x-1/2 -translate-y-1/2 customize w-1/3 rounded-xl h-9/10 bg-[#4b83769b] border border-zinc-700 rounded-md flex flex-col gap-5 p-3`}>
+    <div className={`absolute top-1/2  left-1/2 -translate-x-1/2 -translate-y-1/2 customize w-4/5 sm:w-1/2 lg:w-1/3 rounded-xl h-9/10 bg-[#4b83769b] border border-zinc-700 rounded-md flex flex-col gap-5 p-3`}>
       <div className='flex justify-between items-center px-2'>
         <h1 className='text-black flex gap-3 items-center'><Pencil size={20} />Update</h1>
         <X size={23} color="#000" onClick={() => {
@@ -69,7 +73,7 @@ const Customization = () => {
       <Status onSelect={UpdateStatus} selected={Ustatus} />
 
       <button onClick={UpdateData} className='p-2 bg-white text-black rounded-md cursor-pointer active:scale-97'>Save</button>
-      <button className='p-2 bg-red-700 rounded-md cursor-pointer active:scale-97'>Logout</button>
+      <button onClick={Logout} className='p-2 bg-red-700 rounded-md cursor-pointer active:scale-97'>Logout</button>
     </div>
   )
 }

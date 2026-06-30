@@ -17,3 +17,41 @@
   background: #232327;
 }
 
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #c5f2e8 25%,
+    #ccf4eb 50%,
+    #9cecdb 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+
+@import "tailwindcss";
+
+@theme {
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-float-delayed: float 4s ease-in-out infinite 1.5s;
+  --animate-float-slow: float 6s ease-in-out infinite 0.8s;
+  --animate-bounce-slow: bounce-slow 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

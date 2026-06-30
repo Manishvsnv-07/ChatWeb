@@ -11,7 +11,7 @@ const Country = ({country,CountryCode}) => {
     <div>
       <div  onClick={() => {
         setopen(!open)
-      }} className='w-full flex items-center justify-center gap-3 bg-white'>
+      }} className='w-full flex items-center justify-center gap-3 bg-white cursor-pointer active:scale-95'>
       {code?(<img src={`https://flagcdn.com/w40/${code}.png`} className='w-7 h-7 rounded-full' alt="" />):(null)}
       <button className='p-2'>{Selected}</button>
       </div>
@@ -19,7 +19,7 @@ const Country = ({country,CountryCode}) => {
 
       {open ? (<ul className='flex flex-col gap-3'>
         {countries.map((c, idx) => (
-          <li onClick={() => {
+          <li key={idx} onClick={() => {
             setSelected(c.name)
             CountryCode(c.code)
             country(c.name)

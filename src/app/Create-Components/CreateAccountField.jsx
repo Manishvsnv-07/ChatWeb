@@ -5,9 +5,12 @@ import React, { useState } from 'react'
 import Gender from './Gender'
 import Status from './Status'
 import Country from './Country'
+import { Heading1, User } from 'lucide-react'
+import Createheader from './Createheader'
 
 const CreateAccountField = () => {
     const [Email, setEmail] = useState('')
+    const [EmailError, setEmailError] = useState('')
     const [Name, setName] = useState('')
     const [Username, setUsername] = useState('')
     const [Password, setPassword] = useState('')
@@ -15,21 +18,25 @@ const CreateAccountField = () => {
     const [status, setStatus] = useState("")
     const [country, setcountry] = useState("")
     const [countrycode, setcountrycode] = useState('')
-    console.log(countrycode);
     
+    const ValidationEmail = (email)=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const router = useRouter()
 
     const CreateAccount = async () => {
         try {
+            if(!ValidationEmail(Email)){
+                setEmailError("Invalid email! Example: abc@gmail.com")
+                return
+            }
             const data = await axios.post("http://localhost:8080/create/account", {
                 email: Email,
                 name: Name,
                 username: Username,
                 password: Password,
                 gender: gender,
-                status:status,
-                country:country,
-                countrycode:countrycode
+                status: status,
+                country: country,
+                countrycode: countrycode
             }, { withCredentials: true })
             if (data.status === 200) {
                 router.push("/")
@@ -40,13 +47,15 @@ const CreateAccountField = () => {
         }
     }
     return (
-        <div className="UserEntry m-3 bg-[url('/imgs/createAccount.webp')] bg-cover bg-center z-11 w-1/3 rounded-xl overflow-auto">
-            <div className="LoginBox h-full bg-transparent flex flex-col gap-5 p-3">
-                <input type='email' onChange={(e) => {
+        <div className="UserEntry bg-[url('/imgs/createAccount.webp')] bg-cover bg-center z-11 w-full sm:w-1/2 lg:w-1/3 overflow-auto">
+            <div className="SignUpBox h-full bg-transparent flex flex-col gap-5 p-3">
+                
+                <Createheader/>
+                <input type='email' required onChange={(e) => {
                     setEmail(e.target.value)
 
                 }} value={Email} placeholder='Your Email' className='w-full p-3 bg-transparent border border-[#131413bb] text-black rounded-xl outline-none' />
-
+                {EmailError && <p style={{ color: "red",fontSize:"15px" }}>{EmailError}</p>}
                 <input type="text" onChange={(e) => {
                     setUsername(e.target.value)
 
@@ -65,10 +74,15 @@ const CreateAccountField = () => {
 
 
                 <Gender onSelect={setGender} selected={gender} />
-                <Status onSelect={setStatus} selected={status}/>
-                <Country country={setcountry} CountryCode={setcountrycode}/>
-                
-                <button onClick={CreateAccount} className='bg-[#deede9f6] border border-[#75d1bcbb] rounded-md h-11 active:brightness-120 active:scale-99 cursor-pointer text-black'>Sign Up</button>
+                <Status onSelect={setStatus} selected={status} />
+                <Country country={setcountry} CountryCode={setcountrycode} />
+
+                {
+                    Email && Name && Username && Password && gender && status && countrycode ?
+                        (<button onClick={CreateAccount} className='bg-[#deede9f6] border p-2 border-[#75d1bcbb] rounded-md h-11 active:brightness-120 active:scale-99 cursor-pointer text-black'>Sign Up</button>)
+                        :(<h1 className='w-full flex justify-center text-white font-semibold'>Fill all Fields ✅</h1>)
+                }
+
             </div>
         </div>
     )

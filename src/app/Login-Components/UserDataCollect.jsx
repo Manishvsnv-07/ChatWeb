@@ -6,7 +6,7 @@ import Signup from './Signup'
 
 const UserDataCollect = () => {
   return (
-    <div className="UserEntry m-3 bg-[url('/imgs/bg.jpg')] bg-cover bg-center z-11 w-1/3 rounded-xl overflow-hidden">
+    <div className="UserEntry bg-[url('/imgs/bg.jpg')] bg-cover bg-center z-11 w-full lg:w-1/3 sm:w-1/2  overflow-hidden">
         <Loginbox/>
         <Ortext/>
         <Signup/>

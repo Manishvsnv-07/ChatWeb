@@ -5,9 +5,9 @@ const MessageNotification = createContext(null)
 
 export function MessageProvider({ children }){
     const [MessageLen, setMessageLen] = useState("")
- 
+    const [Count, setCount] = useState({})
     return(
-        <MessageNotification.Provider value={{MessageLen,setMessageLen}}>
+        <MessageNotification.Provider value={{MessageLen,setMessageLen,Count,setCount}}>
             {children}
         </MessageNotification.Provider>
     )

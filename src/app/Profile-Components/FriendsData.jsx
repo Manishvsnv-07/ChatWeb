@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import OtherFriendsCard from './OtherFriendsCard'
+import axios from 'axios';
 
 const FriendsData = () => {
+
+  const [FriendsData, setFriendsData] = useState([])
+  console.log(FriendsData);
+  
+  useEffect(() => {
+    const GetFriendsData = async () => {
+      const res = await axios.get("http://localhost:8080/api/FriendsData", { withCredentials: true })
+      setFriendsData(res.data.FriendsData)
+    }
+    GetFriendsData()
+  }, [])
+  
+  
   return (
-    <div className="friendsData grid h-4/5 grid-cols-4 gap-5 p-5 overflow-auto">
-            <OtherFriendsCard/>
-            <OtherFriendsCard/>
-            <OtherFriendsCard/>
+    <>
+    <div className="friendsData grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 p-5 overflow-auto">
+    {FriendsData.map((data,i)=>(
+            <OtherFriendsCard data={data} key={i}/>
+          ))}
           </div>
+    </>
   )
 }
 
