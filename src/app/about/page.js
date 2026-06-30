@@ -2,7 +2,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-200 px-4 py-16">
+    <main className="min-h-dvh bg-zinc-950 text-zinc-200 px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-2">About ChatWeb</h1>
         <p className="text-zinc-500 mb-10 text-sm">Who we are and what we're building</p>

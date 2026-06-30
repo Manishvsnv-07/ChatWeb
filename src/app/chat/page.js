@@ -4,7 +4,7 @@ import ChatSection from '../Chat-Components/ChatSection'
 
 const page = () => {
   return (
-    <div className='w-full h-screen bg-black flex'>
+    <div className='w-full h-dvh bg-black flex'>
        <AllUsers/>
        <ChatSection/> 
     </div>

@@ -5,7 +5,7 @@ import Customization from '../Login-Components/Customization'
 import ProfileHeaderSkeleton from '../profile-skeleton/ProfileHeaderSkeleton'
 const page = () => {
   return (
-    <div className="relative main h-screen w-full flex flex-col">
+    <div className="relative main h-dvh w-full flex flex-col">
       <Suspense fallback={<ProfileHeaderSkeleton />}>
         <ProfileHeader />
       </Suspense>
