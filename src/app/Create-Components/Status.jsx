@@ -3,13 +3,12 @@ import React from 'react'
 const Status = ({onSelect, selected}) => {
 
     const options = [
-        { value: "Single", label: "Single 🤟" },
-        { value: "Married", label: "Married 🧑🏻‍❤️‍🧑🏻" },
-        { value: "In Relationship", label: "In Relationship 😊" },
+        { value: "Single 🤟", label: "Single 🤟" },
+        { value: "Married 🧑🏻‍❤️‍🧑🏻", label: "Married 🧑🏻‍❤️‍🧑🏻" },
+        { value: "In Relationship 😊", label: "In Relationship 😊" },
     ];
   return (
     <div>
-            <p className="text-sm text-black mb-2">Status</p>
             <div className="grid grid-cols-3 gap-3">
                 {options.map((opt) => (
                     <div

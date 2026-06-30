@@ -1,9 +1,20 @@
+import Image from 'next/image'
 import React from 'react'
 
 const Sideview = () => {
   return (
     <div className='relative hidden sm:block sm:w-1/2 lg:w-2/3 h-full overflow-hidden'>
-      <div className='absolute inset-0 bg-[url(/imgs/bg2.png)] bg-cover bg-center scale-105 blur-[2px]' />
+    <div className="absolute inset-0 -z-10">
+  <Image
+    src="/imgs/bg2.webp"
+    alt=""
+    fill
+    priority
+    quality={75}
+    sizes="65vw"
+    className="object-cover scale-105 blur-[1px] saturate-250"
+  />
+</div>
       <div className='absolute inset-0 bg-black/50' />
 
       <div className='absolute top-[-80px] left-[-60px] w-72 h-72 bg-green-400/20 rounded-full blur-3xl animate-pulse' />
