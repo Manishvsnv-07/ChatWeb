@@ -36,11 +36,11 @@ const AboutMyself = ({data}) => {
             <input onChange={handleFile} accept='image/*' type="file" name='media' style={{ fontSize: 0 }}  className='absolute inset-0 z-10 opacity-0 w-full h-full  rounded-full cursor-pointer' />
           </div>
           <div className="userdata flex flex-col gap-5 text-black">
-            <h1 className='bg-white p-2 rounded-md'>{data.userdata.username}</h1>
-            <h1 className='bg-white p-2 rounded-md'>{data.userdata.name}</h1>
-            <button className='bg-white p-2 rounded-md flex justify-center items-center gap-3'><span>{data.userdata.country}</span><img src={`https://flagcdn.com/w40/${data.userdata.countrycode}.png`} className='h-6 w-6 rounded-full object-cover' alt="" /></button>
-            <button className='bg-white p-2 rounded-md flex justify-center items-center gap-3'><span>{data.userdata.gender}</span><Mars size={21} color="#000000" /></button>
-            <h1 className='bg-white p-2 rounded-md flex justify-center items-center'>{data.userdata.status}</h1>
+            <h1 className='bg-white p-2 rounded-md'>{data?.userdata?.username}</h1>
+            <h1 className='bg-white p-2 rounded-md'>{data?.userdata?.name}</h1>
+            <button className='bg-white p-2 rounded-md flex justify-center items-center gap-3'><span>{data?.userdata?.country}</span><img src={`https://flagcdn.com/w40/${data?.userdata?.countrycode}.png`} className='h-6 w-6 rounded-full object-cover' alt="" /></button>
+            <button className='bg-white p-2 rounded-md flex justify-center items-center gap-3'><span>{data?.userdata?.gender}</span><Mars size={21} color="#000000" /></button>
+            <h1 className='bg-white p-2 rounded-md flex justify-center items-center'>{data?.userdata?.status}</h1>
           </div>
         </div>
   )

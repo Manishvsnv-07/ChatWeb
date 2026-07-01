@@ -1,6 +1,7 @@
 const getdata = async () => {
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL)
     try {
-        const res = await fetch("http://localhost:8080/profile/data", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/data`, {
             method: "GET",
             credentials: "include"
         });

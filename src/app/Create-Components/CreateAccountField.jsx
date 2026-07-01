@@ -39,12 +39,15 @@ const CreateAccountField = () => {
                 country: country,
                 countrycode: countrycode
             }, { withCredentials: true })
+
+            console.log("Response:", data.status, data.data) // debug ke liye
+
             if (data.status === 200) {
                 router.push("/")
             }
 
         } catch (error) {
-
+            console.log("Error:", error.response?.data, error.response?.status) // error dekho
         }
     }
     return (
