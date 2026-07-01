@@ -1,5 +1,4 @@
 import mongoose from "mongoose"
-mongoose.connect('mongodb://localhost:27017/ChatWeb')
 
 const Userschema = mongoose.Schema({
     email:{type:String,require:true},
@@ -11,6 +10,7 @@ const Userschema = mongoose.Schema({
     status:{type:String},
     country:{type:String},
     countrycode:{type:String},
+    Friends:[{type:mongoose.Schema.Types.ObjectId,ref:"user"}],
     isOnline:{type:Boolean,default:false},
     lastSeen: { type: Date, default: Date.now }
 })

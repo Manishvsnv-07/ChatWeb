@@ -15,17 +15,20 @@ import multer from "multer"
 import { v2 as cloudinary } from 'cloudinary'
 
 const app = express()
-const port = process.env.PORT || 8080
+const port = process.env.PORT
+
+mongoose.connect(process.env.MONGODB_URL)
+
 const server = createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: `${process.env.FRONTEND_URL}`,
         credentials: true
     }
 })
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: `${process.env.FRONTEND_URL}`,
     credentials: true
 }))
 app.use(express.json())
@@ -39,12 +42,8 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_APIKEY,
     api_secret: process.env.CLOUDINARY_APISECRET
 })
-console.log("CONFIG:", cloudinary.config())
-console.log(process.env.CLOUDINARY_APIKEY);
-console.log(process.env.CLOUDINARY_APISECRET);
 
 io.on("connection", (socket) => {
-    console.log('User Connected : ', socket.id);
 
     socket.on("user-active", async (UserId) => {
         socket.UserId = UserId
@@ -68,9 +67,9 @@ io.on("connection", (socket) => {
             { $set: { read: true } }
         )
 
-        socket.to(data.roomId).emit("message-seen",{
-            roomId:data.roomId,
-            seenBy:data.currentUserId
+        socket.to(data.roomId).emit("message-seen", {
+            roomId: data.roomId,
+            seenBy: data.currentUserId
         })
     })
 
@@ -94,8 +93,6 @@ io.on("connection", (socket) => {
     })
 
     socket.on("typing-message", (typing) => {
-        console.log(typing);
-
         socket.join(typing.roomId)
         socket.to(typing.roomId).emit("Typing-receive", typing)
     })
@@ -105,7 +102,6 @@ io.on("connection", (socket) => {
         if (!socket.UserId) return
 
         const lastSeen = new Date()
-        console.log(lastSeen);
 
         await user.findByIdAndUpdate(socket.UserId, {
             isOnline: false,
@@ -134,8 +130,13 @@ app.get("/", (req, res) => {
 app.post("/create/account", async (req, res) => {
     try {
         const { email, name, password, username, status, gender, country, countrycode } = req.body;
+        
         let HashPassword = await bcrypt.hash(password, 10)
-        const token = jwt.sign({ email }, "My_Secret")
+        
+        const token = jwt.sign({ email }, process.env.MY_SECRET, {
+            expiresIn: "30d" 
+        })
+        
         const create = new user({
             email: email,
             name: name,
@@ -146,23 +147,24 @@ app.post("/create/account", async (req, res) => {
             countrycode: countrycode,
             password: HashPassword
         })
-        create.save()
+        
+        await create.save() 
+        
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "lax",
-            maxAge: 10 * 365 * 24 * 60 * 60 * 1000
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  
+            secure: process.env.NODE_ENV === "production",  
+            maxAge: 30 * 24 * 60 * 60 * 1000  
         })
+        
         res.status(200).json({ success: true })
 
     } catch (error) {
-        res.status(200).json({ success: false })
         console.log('error occured : ', error);
+        res.status(500).json({ success: false })  
     }
 })
-app.use((req, res, next) => {
-    console.log("Request aaya:", req.method, req.path);
-    next();
-});
+
 app.get("/profile/data", islogged, async (req, res) => {
     try {
         const userdata = await user.findOne({
@@ -185,27 +187,35 @@ app.get("/profile/data", islogged, async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
-        let FindUser = await user.findOne({ username: username })
-        if (FindUser) {
-            let CheckPassword = await bcrypt.compare(password, FindUser.password)
-            if (CheckPassword) {
-                let token = jwt.sign({ email: FindUser.email }, "My_Secret", {
-                    expiresIn: "10 years"
-                })
 
-                res.cookie("token", token, {
-                    httpOnly: true,
-                    sameSite: "lax",
-                    maxAge: 10 * 365 * 24 * 60 * 60 * 1000
-                })
-                res.status(200).json({ success: true })
-            }
+        if (typeof username !== "string" || typeof password !== "string" || !username || !password) {
+            return res.status(400).json({ success: false, message: "Invalid credentials" });
         }
 
+        const FindUser = await user.findOne({ username });
+        const isMatch = FindUser ? await bcrypt.compare(password, FindUser.password) : false;
+
+        if (!FindUser || !isMatch) {
+            return res.status(401).json({ success: false, message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ email: FindUser.email }, process.env.MY_SECRET, {
+            expiresIn: "30d"
+        });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 1000
+        });
+
+        return res.status(200).json({ success: true });
+
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message })
+        return res.status(500).json({ success: false, message: "Something went wrong" });
     }
-})
+});
 
 app.post("/update/data", islogged, async (req, res) => {
     try {
@@ -223,8 +233,21 @@ app.post("/update/data", islogged, async (req, res) => {
 })
 
 app.get("/getUsers", async (req, res) => {
-    const getusers = await user.find()
-    res.status(200).json({ AllUsers: getusers })
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 20
+    const skip = (page - 1) * limit
+
+    const AllUsers = await user.find()
+        .skip(skip)
+        .limit(limit)
+        .select("-password")
+
+    const total = await user.countDocuments()
+
+    res.json({
+        AllUsers,
+        hasMore: page * limit < total
+    })
 })
 
 
@@ -254,13 +277,11 @@ const uploaddpToCloudinary = (buffer, mimetype) => {
 app.post("/api/avatar", upload.single('media'), islogged, async (req, res) => {
     try {
         const result = await uploaddpToCloudinary(req.file.buffer, "image");
-        console.log(result.secure_url);
         let findUser = await user.findOne({ email: req.datahere.email })
 
         await user.findByIdAndUpdate(findUser._id, {
             avatar: result.secure_url
         })
-        console.log(findUser);
         res.status(200).json({ success: true })
     } catch (error) {
         console.log('Error : ', error.message);
@@ -271,8 +292,6 @@ app.post("/api/avatar", upload.single('media'), islogged, async (req, res) => {
 
 app.get("/api/UnreadMsgData/:UserID", async (req, res) => {
     const { UserID } = req.params;
-    console.log(UserID);
-
     const UnreadData = await chat.aggregate([
         {
             $match: {
@@ -287,9 +306,72 @@ app.get("/api/UnreadMsgData/:UserID", async (req, res) => {
             }
         }
     ])
-    console.log("Unread : ", UnreadData);
 
     res.status(200).json({ success: true, UnreadData: UnreadData })
+})
+
+app.post("/api/Addfriend", islogged, async (req, res) => {
+    const { SelectedUser } = req.body;
+    let FindMe = await user.findOne({ email: req.datahere.email })
+
+    const AlreadyFriend = FindMe.Friends.some(
+        (id) => id.toString() === SelectedUser._id.toString()
+    )
+
+    if (AlreadyFriend) {
+        await user.updateOne(
+            { _id: FindMe._id },
+            { $pull: { Friends: SelectedUser._id } }
+        )
+        res.json({ Friend: false, friends: FindMe.Friends })
+    }
+    else {
+        await user.updateOne(
+            { _id: FindMe._id },
+            { $push: { Friends: SelectedUser._id } }
+        )
+    }
+    res.json({ Friend: true, friends: FindMe.Friends })
+})
+
+
+app.get("/api/FriendsData", islogged, async (req, res) => {
+    const FindMe = await user.findOne({ email: req.datahere.email })
+    const FriendsData = await user.find({
+        _id: { $in: FindMe.Friends }
+    })
+    res.status(200).json({ FriendsData: FriendsData, success: true })
+})
+
+app.get("/api/SearchedUser", islogged, async (req, res) => {
+    const { query } = req.query;
+    console.log(query);
+
+    const findMe = await user.findOne({ email: req.datahere.email })
+    if (!query || query.trim() === '') {
+        return res.json({ users: [] });
+    }
+    try {
+
+        const users = await user.find({
+            username: { $regex: query, $options: "i" },
+            _id: { $ne: findMe._id }
+        })
+            .select("username gender avatar countrycode")
+            .limit(15)
+
+
+        res.json({ users })
+    } catch (error) {
+        res.status(500).json({ message: 'Search failed' });
+    }
+
+
+})
+
+app.get("/logout", (req, res) => {
+    res.clearCookie("token")
+    res.json({ success: true })
 })
 
 server.listen(port, () => {
