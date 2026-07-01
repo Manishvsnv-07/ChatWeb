@@ -32,7 +32,6 @@ const Loginbox = () => {
                 router.push("/profile")
             }
         } catch (error) {
-            // axios throws for 4xx/5xx — this is where wrong credentials land
             setIncorrectUser(true)
         } finally {
             setLoading(false)
