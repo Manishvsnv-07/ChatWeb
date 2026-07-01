@@ -124,7 +124,15 @@ app.get("/messages/:roomId", async (req, res) => {
 
 
 app.get("/", (req, res) => {
-    res.send("hello backend")
+    res.send(`
+        <html>
+            <body style="margin:0; background:#09090b; display:flex; justify-content:center; align-items:center; height:100vh;">
+                <h1 style="color:#6ee7b7; font-size:24px; font-weight:600;">
+                    Welcome To ChatWeb - Connect With People
+                </h1>
+            </body>
+        </html>
+    `)
 })
 
 app.post("/create/account", async (req, res) => {
