@@ -173,7 +173,7 @@ const ChatSection = () => {
     setCount(prev => ({ ...prev, [SelectedUser._id]: 0 }))
     setMessageLen(prev => ({ ...prev, [SelectedUser._id]: 0 }))
 
-    fetch(`http://localhost:8080/messages/${rid}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/${rid}`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -218,7 +218,7 @@ const ChatSection = () => {
   const handleFriend = async () => {
     setIsFriend(prev => !prev)
     try {
-      const res = await axios.post("http://localhost:8080/api/Addfriend", {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/Addfriend`, {
         SelectedUser: SelectedUser
       }, { withCredentials: true })
       setIsFriend(res.data.Friend)

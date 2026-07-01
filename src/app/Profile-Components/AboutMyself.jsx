@@ -14,7 +14,7 @@ const AboutMyself = ({data}) => {
     const formData = new FormData()
     formData.append('media',file)
 
-    const res = await axios.post("http://localhost:8080/api/avatar",formData,{
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/avatar`,formData,{
       withCredentials: true,
       headers:{"Content-Type":"multipart/form-Data"}
     })

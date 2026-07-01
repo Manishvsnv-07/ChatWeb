@@ -73,7 +73,7 @@ const AllUsers = () => {
 
   useEffect(() => {
     if (!myData?._id) return;
-    fetch(`http://localhost:8080/api/UnreadMsgData/${myData._id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/UnreadMsgData/${myData._id}`, {
       credentials: "include"
     })
       .then((res) => res.json())
@@ -98,7 +98,7 @@ const AllUsers = () => {
 
     const SearchUser = async () => {
       try {
-        const res = await axiosInstance.get("http://localhost:8080/api/SearchedUser",
+        const res = await axiosInstance.get(`${process.env.NEXT_PUBLIC_API_URL}/api/SearchedUser`,
           {
             params: { query: debouncedQuery },
           })

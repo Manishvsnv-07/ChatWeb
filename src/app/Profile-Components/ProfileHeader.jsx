@@ -25,7 +25,7 @@ const ProfileHeader = () => {
 
   useEffect(() => {
     if (!UserData?._id) return;
-    fetch(`http://localhost:8080/api/UnreadMsgData/${UserData?._id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/UnreadMsgData/${UserData?._id}`, {
       credentials: "include"
     })
       .then((res) => res.json())

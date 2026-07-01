@@ -10,6 +10,7 @@ const Gender = ({onSelect, selected}) => {
     ];
     return (
         <div>
+            <p className="text-sm text-black mb-2">Gender</p>
             <div className="grid grid-cols-3 gap-3">
                 {options.map((opt) => (
                     <div

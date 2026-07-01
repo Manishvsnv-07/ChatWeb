@@ -10,7 +10,7 @@ const Loginbox = () => {
     const [Password, setPassword] = useState('')
     const router = useRouter();
     const LoginUser = async()=>{
-      let data = await axios.post("http://localhost:8080/login",{
+      let data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`,{
         username:Username,
         password:Password
       },{withCredentials:true})

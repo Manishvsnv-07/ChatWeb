@@ -27,7 +27,7 @@ const Customization = () => {
 
   let router = useRouter()
   const UpdateData = async () => {
-    let data = await axios.post("http://localhost:8080/update/data", {
+    let data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/update/data`, {
       Uusername: Uusername,
       Uname: Uname,
       Ugender: Ugender,
@@ -45,7 +45,7 @@ const Customization = () => {
 
 
   const Logout = async () => {
-    const res = await axios.get("http://localhost:8080/logout", { withCredentials: true })
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/logout`, { withCredentials: true })
     if(res.data.success){
       router.push("/")
     }

@@ -8,7 +8,7 @@ export const SocketProvider = ({ children }) => {
   const socket = useRef(null)
 
   useEffect(() => {
-    socket.current = io("http://localhost:8080", {
+    socket.current = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
       withCredentials: true,
       autoConnect: true,
       reconnection: true

@@ -29,7 +29,7 @@ const CreateAccountField = () => {
                 setEmailError("Invalid email! Example: abc@gmail.com")
                 return
             }
-            const data = await axios.post("http://localhost:8080/create/account", {
+            const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/create/account`, {
                 email: Email,
                 name: Name,
                 username: Username,
@@ -58,7 +58,7 @@ const CreateAccountField = () => {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover -z-10"
             />
-            <div className="SignUpBox h-full bg-transparent flex flex-col gap-4 p-2 overflow-auto">
+            <div className="SignUpBox h-full bg-transparent flex flex-col gap-4 p-2">
 
                 <Createheader />
                 <input type='email' required onChange={(e) => {

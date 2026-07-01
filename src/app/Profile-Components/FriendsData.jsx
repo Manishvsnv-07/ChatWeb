@@ -9,7 +9,7 @@ const FriendsData = () => {
   
   useEffect(() => {
     const GetFriendsData = async () => {
-      const res = await axios.get("http://localhost:8080/api/FriendsData", { withCredentials: true })
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/FriendsData`, { withCredentials: true })
       setFriendsData(res.data.FriendsData)
     }
     GetFriendsData()
