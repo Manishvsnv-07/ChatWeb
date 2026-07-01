@@ -361,18 +361,33 @@ const ChatSection = () => {
 
 
             <div className="Sendchat relative w-full h-1/10  pb-1 px-2 flex">
-              <input maxLength={500} value={message} onChange={(e) => {
-                setmessage(e.target.value)
-                TypingMessage()
-              }} onKeyDown={(e) => {
-                if (e.key === "Enter" && e.target.value) setMessage()
-              }} type="text" placeholder='Start Chat' className='w-full bg-black border border-zinc-700 text-white h-full rounded-md px-2 outline-0' />
+              <input
+                maxLength={500}
+                value={message}
+                onChange={(e) => {
+                  setmessage(e.target.value)
+                  TypingMessage()
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && e.target.value) setMessage()
+                }}
+                type="text"
+                name="chat-message"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+                data-lpignore="true"
+                data-form-type="other"
+                placeholder='Start Chat'
+                className='w-full bg-black border border-zinc-700 text-white h-full rounded-md px-2 outline-0'
+              />
               <SendHorizontal onClick={setMessage} className='absolute w-9 h-9 top-1/2 -translate-y-1/2 right-4 text-white rounded-md p-1 active:scale-95 cursor-pointer' />
             </div>
           </div>) :
 
 
-        (<EmptyChatState/>)}
+        (<EmptyChatState />)}
     </>
 
   )

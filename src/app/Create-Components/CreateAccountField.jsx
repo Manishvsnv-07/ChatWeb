@@ -61,7 +61,7 @@ const CreateAccountField = () => {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover -z-10"
             />
-            <div className="SignUpBox h-full bg-transparent flex flex-col gap-4 p-2">
+            <div className="SignUpBox h-full bg-transparent flex flex-col gap-4 p-2 pb-[calc(env(safe-area-inset-bottom)+32px)]">
 
                 <Createheader />
                 <input type='email' required onChange={(e) => {
