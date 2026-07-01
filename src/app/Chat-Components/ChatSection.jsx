@@ -29,7 +29,7 @@ const getLastSeenText = (lastSeen) => {
 }
 
 const ChatSection = () => {
-  const socket = useSocket()
+  const { socket, isConnected } = useSocket()
   const typingTimeout = useRef(null)
   const roomIdRef = useRef('')
   const currentUserIdRef = useRef('')
@@ -78,19 +78,16 @@ const ChatSection = () => {
 
 
   useEffect(() => {
-    if (!socket?.current) return
+    if (!socket) return
 
-    socket.current.on("connect", () => {
-      console.log('Connected Id : ', socket.current.id);
-    })
-    socket.current.on("receive-message", (data) => {
+    socket.on("receive-message", (data) => {
       setMessages((prev) => {
         const Updated = [...prev, data]
         return Updated
       })
     })
 
-    socket.current.on("message-seen", (data) => {
+    socket.on("message-seen", (data) => {
       if (data.roomId !== roomIdRef.current) return
 
       setMessages((prev) =>
@@ -100,10 +97,9 @@ const ChatSection = () => {
             : msg
         )
       )
-
     })
 
-    socket.current.on("Typing-receive", (data) => {
+    socket.on("Typing-receive", (data) => {
       if (data.roomId !== roomIdRef.current) return
       if (String(data.senderId) === String(currentUserIdRef.current)) return
 
@@ -115,29 +111,27 @@ const ChatSection = () => {
       }, 1500)
     })
 
-    socket.current.on("disconnect", () => {
-      console.log("Socket disconnected")
-    })
-
     return () => {
       clearTimeout(typingTimeout.current)
-      socket.current.disconnect()
+      socket.off("receive-message")
+      socket.off("message-seen")
+      socket.off("Typing-receive")
     }
 
-  }, [])
+  }, [socket, currentUser])
 
 
   useEffect(() => {
-    if (!currentUser?._id || !socket.current) return
+    if (!currentUser?._id || !socket) return
 
-    socket.current.emit("user-active", currentUser._id)
-  }, [currentUser])
+    socket.emit("user-active", currentUser._id)
+  }, [currentUser, socket])
 
 
   useEffect(() => {
-    if (!socket.current) return
+    if (!socket) return
 
-    socket.current.on("presence-update", (data) => {
+    socket.on("presence-update", (data) => {
       if (String(data.UserId) !== String(SelectedUser?._id)) return
 
       setActive(data.isOnline)
@@ -145,9 +139,9 @@ const ChatSection = () => {
     })
 
     return () => {
-      socket.current.off("presence-update")
+      socket.off("presence-update")
     }
-  }, [SelectedUser])
+  }, [socket, SelectedUser])
 
 
   useEffect(() => {
@@ -159,13 +153,13 @@ const ChatSection = () => {
 
   useEffect(() => {
 
-    if (!currentUser?._id || !SelectedUser?._id || !socket.current) return
+    if (!currentUser?._id || !SelectedUser?._id || !socket) return
 
     const rid = [currentUser._id, SelectedUser._id].sort().join("_")
     setroomId(rid)
     setTyping(false)
 
-    socket.current.emit("join-room", {
+    socket.emit("join-room", {
       roomId: rid,
       currentUserId: currentUser._id,
       SelectedUserId: SelectedUser._id
@@ -182,11 +176,11 @@ const ChatSection = () => {
         setChatLoading(false)
       });
 
-  }, [currentUser, SelectedUser])
+  }, [currentUser, SelectedUser, socket])
 
 
   const setMessage = () => {
-    if (!message.trim() || !roomId || !currentUser?._id || !SelectedUser?._id || !socket.current) return
+    if (!message.trim() || !roomId || !currentUser?._id || !SelectedUser?._id || !socket) return
 
     const messageData = {
       roomId,
@@ -196,18 +190,18 @@ const ChatSection = () => {
       createdAt: new Date()
     }
 
-    socket.current.emit("send-message", messageData, (savedMessage) => {
+    socket.emit("send-message", messageData, (savedMessage) => {
       setMessages((prev) => [...prev, savedMessage]),
         setmessage("")
     })
   }
 
   const TypingMessage = () => {
-    if (!currentUser?._id || !SelectedUser?._id || !socket.current) return
+    if (!currentUser?._id || !SelectedUser?._id || !socket) return
 
     const typingRoomId = roomId || [currentUser._id, SelectedUser._id].sort().join("_")
 
-    socket.current.emit("typing-message", {
+    socket.emit("typing-message", {
       roomId: typingRoomId,
       senderId: currentUser._id,
       receiverId: SelectedUser._id
@@ -385,4 +379,3 @@ const ChatSection = () => {
 }
 
 export default ChatSection
-

@@ -22,7 +22,7 @@ const AboutMyself = ({data}) => {
   }
   
   return (
-    <div className='AboutMyself w-full h-1/2 bg-[#75d1bc9b] flex justify-center items-center gap-11 text-white'>
+    <div className='AboutMyself w-full h-1/2 bg-[#75d1bc9b] flex justify-center items-center gap-5 text-white'>
           <div className="relative h-50 w-50 rounded-full border border-white">
             <Image 
             src={getOptimizedImage( preview || data?.userdata?.avatar || "/imgs/default.png" , {width:200 ,height:200}) } 
