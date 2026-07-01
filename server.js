@@ -138,13 +138,13 @@ app.get("/", (req, res) => {
 app.post("/create/account", async (req, res) => {
     try {
         const { email, name, password, username, status, gender, country, countrycode } = req.body;
-        
+
         let HashPassword = await bcrypt.hash(password, 10)
-        
+
         const token = jwt.sign({ email }, process.env.MY_SECRET, {
-            expiresIn: "30d" 
+            expiresIn: "30d"
         })
-        
+
         const create = new user({
             email: email,
             name: name,
@@ -155,21 +155,21 @@ app.post("/create/account", async (req, res) => {
             countrycode: countrycode,
             password: HashPassword
         })
-        
-        await create.save() 
-        
+
+        await create.save()
+
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",  
-            secure: process.env.NODE_ENV === "production",  
-            maxAge: 30 * 24 * 60 * 60 * 1000  
+            sameSite: "none",
+            secure: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
-        
+
         res.status(200).json({ success: true })
 
     } catch (error) {
         console.log('error occured : ', error);
-        res.status(500).json({ success: false })  
+        res.status(500).json({ success: false })
     }
 })
 
@@ -213,10 +213,10 @@ app.post("/login", async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 1000
-        });
+            sameSite: "none",
+            secure: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        })
 
         return res.status(200).json({ success: true });
 
